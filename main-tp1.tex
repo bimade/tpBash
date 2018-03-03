@@ -1,0 +1,303 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[french]{babel}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage[T1]{fontenc}
+\usepackage{todonotes}
+\newcounter{numerotodo}
+\newcommand{\TODO}[1]{\refstepcounter{numerotodo}\todo[inline]{\thenumerotodo) #1}}
+\usepackage{geometry}
+ \geometry{
+      a4paper,
+       total={170mm,257mm},
+        left=20mm,
+         top=20mm,
+          }
+
+
+\begin{document}
+\begin{center}
+\huge{TP 1 (Système de Fichiers)}
+\end{center}
+=============================================================
+\section{introduction}
+Le système de gestion de fichiers (SGF) d'Unix procure à l'utilisateur un moyen efficace pour conserver et manipuler aisément des informations. En outre, il offre un système de sécurité, notamment sur les droits d'accès aux fichiers.
+
+
+Il existe trois principaux types de fichiers :
+\begin{itemize}
+\item les fichiers de données (ordinary files),
+\item les répertoires (directories),
+\item les périphériques (devices).
+\end{itemize}
+
+Ce SGF est simple et permet de manipuler de manière uniforme les fichiers comme les périphériques. Sous Unix, on a coutume de dire que "tout est fichier !". Par ailleurs, le SGF d'Unix ne fait aucune
+supposition sur l'organisation interne des fichiers. Tout fichier est vu comme une simple suite d'octets.
+
+
+Le système de gestion de fichiers utilise une structure hiérarchique (arborescence) composée de répertoires et de fichiers. Chaque répertoire contient des fichiers ordinaires ou d'autres répertoires.
+
+Voici un exemple classique d'organisation d'un SGF Unix.
+
+
+/ \\
+    |-- bin         -> les programmes exécutables standards \\
+    |-- etc         -> les fichiers de configuration \\
+    |-- home        -> les utilisateurs "locaux" \\
+    |-- net         -> les utilisateurs "réseaux" \\
+    |-- lib         -> les bibliothèques standard pour la compilation\\
+    |-- usr         \\
+    |-- |-- man     -> les pages de manuel (aide en ligne) \\
+    |-- |-- src     -> les sources des programmes \\
+    |-- dev         -> les fichiers spéciaux représentant les périphériques \\
+    |-- boot        \\
+    |-- proc        \\
+    |-- var         \\
+    |-- tmp         -> les fichiers temporaires \\
+
+\section{Les répertoires}
+
+Il existe un certains nombre de répertoires particuliers :
+\begin{itemize}
+\item / désigne la racine de l'arborescence,
+\item . désigne le répertoire courant,
+\item .. désigne le répertoire père du répertoire courant,
+\item ~ désigne votre répertoire utilisateur (home directory).
+\end{itemize}
+La variable \$HOME pointe également sur votre répertoire utilisateur,
+également appelé répertoire de connexion. Il sagit en quelque sorte de
+votre maison, là où vous pouvez stocker vos fichiers.
+
+
+\TODO{Pour afficher le contenu de la variable HOME, dans un terminal en tapant la commande : echo \$HOME.}
+
+
+Remarque : Le symbole \$ placé devant le nom de la variable signifie que vous souhaitez accèder à la valeur de la variable.
+\section{Nom de Fichier}
+
+Les noms de fichiers sont limités à 256 caractères sous Unix. De préférence, n'utilisez pas d'espace mais "\_" à la place. Evitez les caractères spéciaux (\&, @, \$, \#, ...). Le plus simple est de toujours utiliser des lettres et des chiffres.
+Attention le système Unix fait la différence entre majuscules et minuscules ! Les fichiers toto, Toto et TOTO ont des noms différents.L'extension ou suffixe (optionnel) fait partie du nom, il commence par
+"." et n'a pas de limite de taille (.txt, .html, .tar.gz, .ps.gz, etc.). Il permet d'indiquer le type du fichier. Il ne s'agit que d'une convention sous Unix. Pour connaître le type d'un fichier, il faut utiliser la commande "file". Par exemple :
+file ~/.bashrc
+
+\section{Commandes et Aide en Ligne}
+
+Voici la syntaxe classique d'une commande Unix :
+
+\begin{center}
+cmd [-opt1] [-opt2] ... [--] arg1 arg2 ...
+\end{center}
+
+où :
+\begin{itemize}
+\item  "cmd" correspond au nom de la commande,
+\item  "-opt" correspond à une option possible,
+\item  "arg" correspond à un argument.
+\end{itemize}
+
+Notons que les arguments sont le plus souvent un nom de fichier que la
+commande manipule. On peut utiliser "--" pour séparer explicitement
+les options des arguments quand la commande est ambiguë.
+
+Pour obtenir l'aide en ligne sur une commande, il suffit d'utiliser le
+"man". Pour obtenir l'aide sur la commande "cmd", il suffit de taper :
+man cmd
+
+Attention ! L'aide est écrite en anglais et les version traduites sont
+souvent de moindre qualité. Un conseil : s'habituer dès maintenant à
+lire la documentation en anglais ;-)
+
+Si elle n'est pas en anglais, on peut l'afficher en anglais en tapant :
+
+
+man -L en cmd
+
+\TODO{Demander l'aide de la commande mkdir. Faire défiler avec les flèches haut/bas, utiliser "q" pour quitter.}.
+
+
+
+\section{Gestion de l'arborescence}
+\TODO{La commande "mkdir" (make directory) permet de créer un nouveau
+répertoire. Dans un terminal, utilisez cette commande pour créer le
+répertoire TOTO. Il suffit de taper "mkdir TOTO" ; dans ce cas on dit
+que TOTO est un argument (ou paramètre) de la commande mkdir.}
+
+\TODO{Grâce à la commande "ls -l", vérifiez que vous avez bien créé ce répertoire}.
+\TODO{Détruisez ce répertoire en utilisant la commande "rmdir"}.
+
+\TODO{Tapez la commande "cd".}
+
+ Cette commande, sans paramètre, a pour effet de vous re-positionner dans votre répertoire utilisateur.
+
+Vous allez maintenant vous servir des premières commandes de base qui vous permettront de gérer votre espace de travail (donc votre arborescence). Pour cela, vous allez utiliser les commandes suivantes
+: pwd (retourne le nom du répertoire courant), ls (liste le contenu du répertoire), cd (change de répertoire), mkdir (crée un ou plusieurs répertoires) et rmdir (détruit un ou plusieurs répertoires). À vous d'utiliser ces commandes pour répondre aux questions suivantes.
+
+\TODO{ Dans quel répertoire vous trouvez-vous ?}
+\TODO{créez le répertoire \$HOME/Unix/TP1.}
+\TODO{Vérifiez qu'il a bien été créé.}
+\TODO{Toujours depuis ce répertoire, créez le répertoire \$HOME/Unix/TP1/rep.}
+\TODO{Déplacez-vous dans le répertoire TP1 et détruisez le répertoire rep.}
+\TODO{Qu'y a-t-il dans le répertoire \$HOME/.. ? Avez-vous trouvé le répertoire de votre voisin ?}
+\TODO{Essayez de vous déplacer dans le répertoire de votre voisin, et de lister ses fichiers.}
+
+\section{Lister les Fichiers}
+
+
+Vous allez maintenant voir un peu plus en détail comment lister les fichiers contenus dans un répertoire. La commande utile pour cet exercice est ls.
+
+Dans le répertoire /bin (ou /usr/bin) :
+
+\TODO{ listez les fichiers ;}
+\TODO{ listez tous les fichiers y compris les fichiers cachés (commençant par un point) ;}
+\TODO{ listez les fichiers en format long ;}
+\TODO{ listez les fichiers en format long dans l'ordre inverse de l'ordre alphabétique ;}
+
+\TODO{listez les fichiers du plus ancien au plus récent en format long ;}
+
+Les caractères suivants ont une signification particulière pour l'interpréteur de commandes (i.e. le shell) : ? * [ ] $\backslash$ \textasciitilde.  Ces caractères peuvent néanmoins être utilisés dans des noms de fichiers ou répertoires (pas conseillé) en les despécialisant à l'aide du caractère $\backslash$. 
+
+Par exemple, si l'argument qu'on veut faire passer à l'interpréteur de commande est ]*do?re$\backslash$mi[ on écrira $\backslash$]$\backslash$*do$\backslash$?re$\backslash\backslash$mi$\backslash$[
+
+– le caractère ? permet de remplacer un caractère quelconque ; par exemple, la commande ls fic? donnera tous les noms de quatre
+lettres dont les trois premières sont fic ;
+
+– le caractère * remplace n'importe quelle chaîne de caractères (y
+compris la chaîne vide) ; par exemple, la commande ls fic* donnera
+tous les noms de trois lettres ou plus, dont les trois premières
+lettres sont fic ;
+
+– une suite de caractères entre crochets [ ] désigne un seul
+caractère de la suite ; par exemple, en supposant que vous disposiez
+dans votre répertoire courant des fichiers fic1, fic2 et fic3, alors
+ls fic[123] sera équivalent à ls fic1 fic2 fic3 ;
+
+– deux caractères séparés par un - entre crochets [ ] (par exemple
+[a-e]) désigne un seul caractère de l'intervalle de caractères ; par
+exemple, en supposant que vous disposiez dans votre répertoire
+courant des fichiers fica, ficb, ficc, ficd, et fice, alors la
+commande ls fic[a-e] est équivalente à ls fica ficb ficc ficd fice.
+
+– le caractère \textasciitilde désigne le nom du répertoire utilisateur de l'utilisateur courant.
+
+\TODO{Listez tous les fichiers dont le nom :}
+
+\begin{enumerate}
+\item commence par r ;
+\item finit par e ;
+\item commence par n et finit par e ;
+\item contient exactement quatre caractères quelconques ;
+\item contient au moins quatre caractères ;
+\item contient au moins un z ;
+\item commence par un chiffre.
+\end{enumerate}
+
+\TODO{La commande touch permet de modifier la date de la dernière modification d'un fichier. Cette commande, appliquée à un nom de fichier n'existant pas, permet de créer ce fichier avec une taille de0 octets. Avec cette commande, créez un fichier de nom m et un deuxième de nom r.}
+
+\TODO{Créez le fichier [mr]. Vérifier que le nom du fichier est bien [mr].}
+
+\TODO{À l'aide de la commande mv, renommez le fichier [mr] en ?.}
+
+\section{Manipulation de Fichiers}
+
+Les commandes cp, rm, more, cat, vous permettront de répondre aux questions suivantes. N'oubliez pas de lire attentivement les pages de manuel associés à ces commandes.
+
+\TODO{Revenez, s'il y a lieu, dans le répertoire \$HOME/Unix/TP1.}
+\TODO{Copiez le fichier /etc/hosts dans le répertoire \$HOME que vous désignerez par son chemin absolu.}
+
+\TODO{Copiez le fichier hosts depuis votre répertoire racine vers le répertoire courant (\$HOME/Unix/TP1) en utilisant cette fois des chemins relatifs. Détruisez le fichier \$HOME/hosts.}
+\TODO{Créez un fichier de nom -i, et essayez de l'effacer.}
+\TODO{Trouvez deux commandes permettant de visualiser le contenu du fichier hosts.}
+
+\section{Droit d'Accès aux Fichiers}
+
+A chaque fichier est associé un ensemble de permissions qui détermine qui a le droit de lire, écrire, effacer ou exécuter un fichier. Ces droits d'accès sont résumés par des lettres :
+\begin{itemize}
+\item r : autorisé en lecture.
+\item w : autorisé en écriture-effacement.
+\item x : autorisé en exécution.
+\end{itemize}
+
+
+Ces trois permissions peuvent être appliquées au propriétaire du fichier (la personne qui l'a créé ), aux membres du groupe, et à tous les autres utilisateurs du système. En résumé :
+\begin{itemize}
+\item  u: user (le propriétaire du fichier).
+\item  g: group (le groupe auquel est rattaché le fichier).
+\item  o: others (tous les autres utilisateurs).
+\item a:all (le propriétaire, le group, et les autres)
+\end{itemize}
+
+Par exemple, si on affiche les permissions associées à un fichier qui s'appelle mon\_fichier, supposons qu'on obtienne
+\begin{center}
+ -rwxrwxrwx 1 toto miage 124 2010-09-08 17:59 mon\_fichier
+\end{center}
+
+Cela signifie que l'utilisateur toto possède un fichier de 124 octets qui s'appelle mon\_fichier créé le 8 septembre de l'année 2010 à 17h59 et qui appartient au groupe miage. Dans -rwxrwxrwx, les caractères numéro 2,3,4 correspondent à u , les caractères numéro 5,6,7 à g et les trois derniers à o.
+
+Ainsi, mon\_fichier est autorisé en lecture, écriture et exécution pour le propriétaire (u=rwx), le groupe (g=rwx) et les autres utilisateurs (o=rwx).
+
+
+La commande Unix vous permettant de changer les permissions d'accès aux fichiers est : chmod. Pour changer les permissions de l'exemple précédent afin d'obtenir les permissions de l'exemple suivant,
+l'utilisateur toto utilisera la commande chmod g-w,o-wx mon fichier.
+
+
+EXEMPLE : 
+\begin{center}
+-rwxr-xr--- 1 toto miage 124 2010-09-08 17:59 mon\_fichier
+\end{center}
+
+signifie que l'utilisateur toto possède un fichier de 124 octets qui s'appelle mon\_fichier crée le 8 septembre de l'année 2010 à 17h59 et qui appartient au groupe miage. mon\_fichier est autorisé en lecture, écriture et exécution pour le propriétaire (u=rwx), en lecture et exécution seulement pour le groupe (g=r-x) et en lecture seule pourles autres utilisateurs (o=r---).
+
+Pour retrouver les permissions du premier exemple, le propriétaire du fichier utilise la commande chmod g+w,o+wx mon\_fichier. Il pourrait aussi utiliser la commande : chmod u=rwx,g=rwx,o=rwx mon\_fichier 
+
+Vous pouvez aussi positionner des permissions (pour vous, le groupe et les autres) sur vos répertoires.
+
+Dans ce cas, les lettres r,w et x ont la signification suivante.
+\begin{itemize}
+\item r : autorisé à lister le contenu du répertoire.
+\item w : autorisé à créer ou détruire des fichiers dans le répertoire.
+\item x : autorisé à traverser ce répertoire.
+\end{itemize}
+
+\TODO{Affichez les permissions du répertoire de votre voisin pour comprendre pourquoi vous ne pouviez pas y accéder. (On pourra utiliser la commande ls -l)}
+
+\TODO{Copiez le fichier hosts dans le fichier hosts.bis.}
+\TODO{Modifiez les protections de votre fichier hosts pour que vous, propriétaire du fichier, puissiez le lire mais pas l'effacer.}
+
+\TODO{Essayez de l'effacer.}
+\TODO{Modifiez les protections de votre fichier hosts.bis pour que les utilisateurs de votre groupe puissent le lire et le détruire.}
+
+\section{Les Liens Symboliques}
+
+\TODO{Déplacez-vous dans votre répertoire $\backslash$/Unix/TP1. Créez un fichier
+source en tapant dans un terminal les commandes suivantes :}
+
+cat > source \\
+Hello World! \\
+<Ctrl>-d \\
+
+Ce fichier est créé a l'aide de la commande cat et d'un mécanisme de redirection (>). Nous verrons dans un TP ultérieur plus en détails les mécanismes de redirection.
+
+\TODO{Lisez la page de manuel de la commande ln.}
+\TODO{Visualisez le contenu du fichier source.}
+\TODO{Créez un lien symbolique (ln -s) de source vers source.sym.}
+\TODO{Listez à l'aide de la commande ls -l le contenu du répertoire $\backslash$/Unix/TP1.}
+\TODO{Vérifiez avec la commande cat que ces deux fichiers ont le même contenu.}
+\TODO{Renommez le fichier source en source.bis. Qu'en est-il du lien symbolique ?}
+
+\section*{A propos du TP}
+Imad Eddine BOUSBAA (ibousbaa@usthb.dz), année 2018;
+
+Les sources de ce TP sont sur le dépot :
+
+  \begin{center}\url{github.com/bimade/tpBash}\end{center}
+
+  ce TP \emph{est} sous licence
+  \href{http://creativecommons.org/licenses/by-nc-sa/4.0/}
+  {Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) }
+
+
+Ce document provient presque entièrement d'un document fait par Patxi Laborde Zubieta (patxi.laborde-zubieta@labri.fr)
+
+
+\end{document}
