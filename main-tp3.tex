@@ -1,0 +1,262 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[french]{babel}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage[T1]{fontenc}
+\usepackage{todonotes}
+\newcounter{numerotodo}
+\newcommand{\TODO}[1]{\refstepcounter{numerotodo}\todo[inline]{\thenumerotodo) #1}}
+\usepackage{geometry}
+ \geometry{
+      a4paper,
+       total={170mm,257mm},
+        left=20mm,
+         top=20mm,
+          }
+
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{tcolorbox}
+\tcbuselibrary{listings,skins}
+\lstdefinestyle{mystyle}{
+     basicstyle=\ttfamily\color{white},
+     language=bash,
+     tabsize=1,
+     keywordstyle=\color{blue}\bf,
+     showstringspaces=false,
+     morekeywords={mount, umount, ls, 
+	 		cat, adduser, chown, chgrp, init, fuser}
+ }
+\newtcblisting{mylisting}{
+      enhanced,                             %%% needed for shadow
+      arc=2mm,
+      top=0mm,
+      bottom=0mm,
+      left=0mm,
+      right=0mm,
+      boxrule=0pt,
+      colback=black,
+      %shadow={5mm}{-3mm}{0mm}{fill=black!50!white,opacity=0.5},             %%% here for shadow  and adjust as you like
+      listing only,
+      listing options={style=mystyle},
+      hbox
+}
+
+
+\begin{document}
+\begin{center}
+\huge{TP 3 (Les Processus)}
+\end{center}
+=============================================================
+
+\section{introduction}
+Le but de cette séance de TP est de vous familiariser avec la notion de processus sous Unix. Celle-ci est importante, voire essentielle, pour comprendre le mécanisme fondamental de fonctionnement de ce système d'exploitation. Notamment, vous verrez que sous Unix, toute commande est rattachée à un processus. Vous vous familiariserez aussi avec les mécanismes de redirection.
+
+\section{Généralités}
+Tout d'abord, vous ne devez pas oublier que le système Unix est multi-utilisateurs. Vous pouvez lancer, sous une même session de travail, plusieurs programmes qui s'exécuteront simultanément. En fait, le terme "simultanément" est un abus de langage, car très souvent les ordinateurs ne possèdent qu'un seul processeur de calcul,
+ce qui implique que les différents programmes s'exécutent en temps
+partagé.
+
+Nous appellerons "processus" l'occurrence d'un programme en cours d'exécution. Le noyau (kernel) du système attribue un identificateur
+à chaque processus. Cet identificateur de processus, un entier, est appelé PID pour "process identifier".
+
+Les processus ont en quelque sorte une vie ; ils naissent (lorsque vous lancez un programme ou tapez une commande), ils vivent (lorsqu'ils s'exécutent) et meurent (lorsqu'ils ont terminé leur exécution). A leur naissance, chaque processus se voit attribuer par le système un PID unique. Ainsi, à un instant donné, tous les processus vivants ont un PID différent, qui permet de les identifier sans ambiguité. Enfin, lorsqu'un processus meurt, son pid redevient disponible et pourra être réattribué par le système à un nouveau processus.
+
+\section{Première vision des processus}
+
+Dans cette partie, vous allez commencer à manipuler les processus à travers divers exemples. Les commandes à utiliser pour répondre aux questions suivantes sont : ps, kill, jobs, fg, bg, top. Pensez à utiliser le man.
+
+Un job est un programme initié de manière intéractive, ne libèrant pas le terminal.
+
+\TODO{Tapez la commande xeyes. Normalement vous n'avez plus le control de votre terminal.}
+\TODO{Pressez maintenant Control + z dans votre terminal.}
+
+xeyes vient d'être suspendu.
+
+\TODO{Testez la commande jobs. Elle permet de lister les jobs en cours, et de donner leur statut.}
+\TODO{Testez la commande fg. Elle permet de relancer un processus qui a été suspendu.}
+\TODO{Interrompez à nouveau le processus avec Ctrl+z. Testez la commande bg. Elle permet de faire tourner un processus en arrière plan, ce qui libère le terminal.}
+\TODO{Lancez à nouveau la commande xeyes. Utilisez Ctrl+c, cette combinaison de touches permet de d'interrompre un processus en cours d'exécution.}
+\TODO{Lancez à nouveau la commande xeyes, puis Ctrl+z, puis jobs.}
+
+On peut voir que les deux processus se sont vu attribuer les nombres 1 et 2.
+
+\TODO{Tapez la commande kill -9 \%n, où n correspond au numéro d'un job. (À part si vous avez fait vos propres tests, n devrait être 1 ou 2.)À la prochaine commande que vous taperez, vous serez informé de ce qui vient de se passer. Retaper jobs pour vérifier.}
+\TODO{Testez la commande ps. Avec cette commande, on peut avoir accès aux PID des processus en cours.}
+\TODO{En ajoutant l'option -aux, on peut également voir les processus des autres utilisateurs.}
+\TODO{Quel est le numéro du processus xeyes restant ?}
+\TODO{En utilisant kill et le PID du xeyes restant, tuez ce processus.}
+\TODO{Essayez maintenant de tuer un processus d'un autre utilisateur.}
+\TODO{Lancez la commande xeyes \&. L'ajout de \& à la fin de la commande permet de lancer le processus en arrière plan.}
+\TODO{Faites passer le processus en "avant-plan" puis en arrière-plan.}
+
+\section{La Variable PATH}
+
+D'une façon générale, les commandes que vous exécutez sont des programmes placés dans des fichiers de l'arborescence. Par exemple, dans le dossier /bin vous trouverez des commandes que vous avez l'habitude d'utiliser. C'est which qui vous permet de localiser la localisation d'une commande dans l'arborescence. Comment l'interprète de commandes
+
+trouve-t-il le répertoire où se trouve le programme à exécuter ?
+
+Il consulte une variable d'environnement, PATH, qui représente une liste de répertoires séparés par le symbole :.
+
+Vous pouvez voir la valeur de votre variable PATH en tapant : echo \$PATH. Quand vous tapez une commande, l'interprète de commandes effectue une recherche dans chacun des répertoires cités dans la variable PATH. S'il la trouve, il l'exécute, sinon il renvoie le message "command not found". Ainsi, si vous entrez la commande unset PATH, les commandes qui ne sont pas internes au shell ne pourrons plus être utilisées comme d'habitude. Par exemple, pour appeler la commande ls, il faudra taper /bin/ls. Pour des raisons de sécurité, il n'est pas bon que la variable PATH contienne le répertoire courant (i.e. .). Pour exécuter un programme dans le répertoire courant, vous taperez :
+\begin{mylisting}
+./nom\_du\_programme
+\end{mylisting}
+
+\section{Les Mécanismes de Redirection}
+
+Un programme, lorsqu'il s'exécute, a généralement besoin de données en entrée et doit produire des résultats (sinon il n'est pas très utile). Lors de l'élaboration d'un programme, il est donc nécessaire de préciser d'où proviennent les données et où iront les résultats. Sous Unix, ce sont les fichiers qui sont utilisés comme
+support pour contenir ces données et ces résultats. Chaque fichier est identifié par un nom. Parmi ces fichiers, il en est trois qui ont un statut particulier ; on les appelle l'entrée standard (stdin), la sortie standard (stdout), et la sortie d'erreur standard (stderr).
+
+Remarque : Par défaut, Unix associe l'entrée standard au clavier et la sortie standard à la fenêtre dans laquelle l'ordre d'exécution a été donné (généralement, un terminal). Lire le fichier entrée standard équivaut donc à lire ce qui est tapé au clavier et écrire sur le fichier sortie standard équivaut généralement à afficher les résultats dans votre terminal.
+
+Exemple : La commande ls écrit son résultat (i.e. le contenu du répertoire courant) dans le fichier de la sortie standard, qui est par défaut la fenêtre dans laquelle on a tapé la commande ls. Néanmoins, il est possible, grâce au système, d'indiquer lors de l'exécution d'un programme qu'il faut "aller chercher" l'entrée standard ailleurs qu'au clavier et "déposer" les résultats ailleurs qu'à l'écran. On parle dans ce cas de redirection de l'entrée et de la sortie  standard. L'opérateur de redirection de la sortie standard dans une ligne de commande est ">".
+
+\TODO{Exécutez la commande ls depuis votre répertoire utilisateur.}
+\TODO{Réexécutez la commande en redirigeant cette fois-ci la sortie standard dans un fichier dont le nom est output. Pour cela, utilisez la commande : ls > output. Affichez le contenu du fichier output.}
+
+Il est possible de combiner les redirections : l'exécution d'un programme myprog par la commande, myprog < input > output ira chercher les données en entrée dans le fichier input et écrira les résultats dans le fichier output, "court-circuitant" ainsi complètement clavier et écran.
+
+Le fichier outuput est "écrasé" à chaque éxécution de la commande ci-dessus. Pour ajouter la sortie à la fin du fichier, il faut utiliser >> à la place de >, comme ceci :
+\begin{mylisting}
+myprog >> output
+\end{mylisting}
+
+\TODO{Tapez la commande : echo "hello world" > test. Redirigez l'entrée de la commande read pour affecter à la variable x le contenu du fichier test. Vérifez le résultat en tapant echo \$x.}
+
+
+\section{Enchaînement des Processus}
+
+Si vous désirez exécuter plusieurs commandes les unes à la suite des autres, vous pouvez soit les taper une par une au clavier, soit les taper sur une seule ligne de commande en les séparant par un point-virgulen i.e. ";".
+
+\TODO{Effacez votre fichier output.}
+\TODO{Lancez la commande : ls > output ; ls >> output ; ls >> output. Afficher le fichier output pour voir ce qu'il s'est passé.}
+
+Remarque : Attention : l'enchaînement des commandes avec des points-virgules est fait de façon séquentielle.
+
+En effet, avec une ligne de commande du type :
+commande 1 ; commande 2 ; ... ; commande n-1 ; commande n
+
+Le processus associé à la commande 2 ne débute que lorsque le processus associé à la commande 1 est terminé, et ainsi de suite. Le processus associé à la commande n ne débutera que lorsque le processus associé à la commande n-1 sera terminé. Les processus sont exécutés séquentiellement et indépendamment les uns des autres en suivant l'ordre dans lequel ils ont été tapés sur la ligne de commande.
+
+\section{Les Tubes entre Processus}
+
+Nous avons dit au début de ce TP que les processus s'exécutaient indépendamment les uns des autres. Néanmoins, vous allez maintenant voir qu'il est possible de créer des communications entre processus. L'exécution des processus peut alors dépendre des messages qu'ils reçoivent. 
+
+Pour cela analysons l'exemple suivant :
+
+Exemple : 
+\begin{mylisting}
+ ls -l /bin > output ; more output ; rm output
+\end{mylisting}
+
+Si on regarde attentivement cette ligne de commande, on se rend compte que :
+\begin{enumerate}
+\item ls -l /bin > output écrit dans le fichier output par redirection de la sortie standard la liste des fichiers du répertoire /bin ;
+\item more lit dans le fichier output et affiche le résultat page par page ;
+\item output sert de fichier temporaire et peut être supprimé à l'issue du more.
+\end{enumerate}
+
+Il est possible de simplifier l'écriture de l'exemple précédent. Pour ce faire, Unix met à votre disposition un mécanisme particulier appelé tube (pipe en anglais). C'est un opérateur permettant de connecter directement la sortie standard d'un premier programme à l'entrée standard d'un second sans devoir spécifier de fichier
+temporaire. L'opérateur de pipe est |.
+
+Exemple : Reprenons l'exemple précédent, et réécrivons-le en utilisant cette fois-ci un pipe :
+
+\begin{mylisting}
+ls -l /bin | more
+\end{mylisting}
+
+Le processus ls -l /bin envoie son résultat sur l'entrée standard du processus more, ainsi, il n'est plus nécessaire d'utiliser un fichier temporaire comme dans l'exemple précédent (fichier output). Un tube offre un mécanisme de communication puissant qui permet d'échanger des informations entre processus. Il faut bien comprendre que, contrairement à l'enchaînement séquentiel des processus, lors de l'exécution de commande 1 | commande 2, deux processus sont créés qui s'exécute simultanément en se synchronisant.
+
+Un exemple de pipe utile :
+\begin{mylisting}
+ps aux | more  # affiche page par page
+ps aux | grep bash  # recherche "bash"
+\end{mylisting}
+
+\section{Exercices}
+
+Les questions suivantes vont vous permettre d'utiliser les mécanismes de redirection et d'enchaînement des processus (<, >, |, >>, ...) avec quelques commandes Unix simples (cat, wc, tail, head). Bien sûr, dans cette partie, vous n'avez pas le droit d'utiliser un éditeur comme emacs. Toutes les réponses aux questions suivantes se font dans votre terminal.
+
+\TODO{Créez le fichier suivant.}
+\begin{itemize}
+\item d
+\item b
+\item e
+\item a
+\item c
+\item b
+\item d
+\item a
+\item f
+\item f
+\item e
+\end{itemize}
+
+À l'aide de commandes du TP2, afficher le fichier obtenu après ordonnancement alphabétiquement des lignes puis effacement des lignes identiques. Faite le tout en une seule commande et sans créer de fichier intermédiaire.
+
+\TODO{Copiez le fichier /etc/services dans le répertoire \textasciitilde/Unix et placez-vous dans ce répertoire. Si le répertoire Unix n'existe pas, créez-le.}
+\TODO{Trouvez le nombre de caractères/mots/lignes que comporte ce fichier.}
+\TODO{A quoi sert la commande tac (cat en verlan) ? Aller dans le dossier /bin, puis utilisez tac sur la sortie de "ls -1". Revenez dans le répertoire \textasciitilde/Unix.}
+\TODO{Affichez les 50 premières lignes du fichier services.}
+\TODO{Affichez les lignes 40 à 50 du fichier services. Pour cela, il faut combiner head et tail avec un pipe.}
+\TODO{Combien de mots y-a-t-il entre les lignes 40 et 50 ? On écrira une seule ligne de commande.}
+\TODO{Créez un fichier debut formé des 10 premières lignes de services et un fichier fin formé des 10 dernières.}
+\TODO{Créez un fichier extremes constitué de la concaténation de début et fin.}
+\TODO{Renommez le fichier extremes en extremes.old.}
+\TODO{Essayez de reconstruire le fichier extremes, mais en une seule ligne de commandes, sans utiliser les fichiers intermédiaires début et fin. On utilisera les () pour grouper plusieurs commandes, la syntaxe est (cmd1 ; cmd2 ; ... ; cmdn) > fichier sortie.}
+
+Les parenthèse permettent d'exécuter les commandes cmd1,...,cmdn puis de rediriger l'affichage final. C'est équivalent à cmd1 > fichier sortie ; cmd2 >> fichier sortie ; ... ; cmdn >> fichier sortie. Il ne faut pas utiliser de pipe ici.
+
+\section{Sortie d'Erreur}
+Vous avez vu qu'il était possible de rediriger l'entrée standard (stdin) ainsi que la sortie standard (stdout). Nous allons maintenant nous pencher sur la sortie d'erreur standard (stderr).
+
+Un programme, s'il est correctement écrit doit intégrer un système de gestion d'erreurs. En effet, au cas où une erreur interviendrait durant l'exécution d'un programme, ce dernier se doit d'en informer au mieux l'utilisateur. Pour cela, un moyen efficace est de renvoyer un message d'erreur. Il existe sous Unix un fichier particulier dans lequel un programme peut y écrire ses messages d'erreur, c'est la sortie d'erreur standard (stderr). Par défaut, les erreurs envoyées sur la sortie d'erreur s'affichent au même endroit que les résultats envoyés sur sortie standard, c'est-à-dire votre terminal. Néanmoins, il vous est aussi possible de rediriger cette sortie d'erreur dans un fichier.
+
+
+Le symbole utilisé pour rediriger la sortie d'erreur sur un nouveau fichier est 2> ; le symbole utilisé pour rediriger la sortie d'erreur sur un fichier existant (concaténation) est 2>>. 
+
+Pour mieux comprendre, nous allons exécuter une commande sous Unix produisant une erreur.
+
+\TODO{Placez-vous dans votre répertoire utilisateur. Essayez de vous déplacer dans le répertoire pouf en utilisant la commande cd pouf. (le dossier pouf ne doit pas exister.)}
+
+Normalement, un message d'erreur est apparu dans votre terminal.
+
+\TODO{Essayez maintenant de vous déplacer dans le répertoire pouf en utilisant la commande cd pouf 2> erreur.}
+\TODO{Normalement aucun message d'erreur n'apparaît à l'écran.}
+
+Visualisez le contenu du fichier erreur.
+
+\TODO{Réexécutez la commande cd pouf 2> erreur. Visualisez le contenu du fichier erreur.}
+\TODO{Exécutez la commande cd pouf 2>> erreur. Visualisez le contenu du fichier erreur.}
+
+\section{Encore des Exercices}
+
+Vous allez maintenant combiner ces mécanismes de redirection.
+
+\TODO{Ecrivez une commande pour déterminer l'emplacement des fichiers débutant par le préfixe "pass" sur votre système (/). On rappelle que la syntaxe pour utiliser find est :}
+\begin{mylisting}
+find dossier -name "fichiers"
+\end{mylisting}
+
+Comme vous n'avez pas les droits d'accès pour certains répertoires, find vous renvoie des messages d'erreur qui perturbent l'affichage des réultats. Rediriger ces erreurs dans le fichier /dev/null. A quoi cela sert-il selon vous ?
+
+\TODO{Recommencez la commande en redirigeant les résultats de find dans le fichier resultats et les erreurs dans /dev/null.}
+\TODO{Ouvrez un second terminal. Pour connaître le fichier spécial représentant votre terminal, utilisez la commande tty. Avec echo et une redirection, écrivez "hello world" d'unterminal dans l'autre.}
+\TODO{Recommencez l'exercice précédent avec find en redirigeant les erreurs dans le second terminal.}
+
+
+\section*{A propos du TP}
+Imad Eddine BOUSBAA (ibousbaa@usthb.dz), année 2018;
+
+Les sources de ce TP sont sur le dépot :
+
+  \begin{center}\url{github.com/bimade/tpBash}\end{center}
+
+  ce TP \emph{est} sous licence
+  \href{http://creativecommons.org/licenses/by-nc-sa/4.0/}
+  {Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) }
+Ce document provient presque entièrement d'un document fait par Patxi Laborde Zubieta (patxi.laborde-zubieta@labri.fr)
+
+\end{document}

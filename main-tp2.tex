@@ -1,8 +1,327 @@
 \documentclass[10pt,a4paper]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[french]{babel}
+\usepackage{url}
+\usepackage{hyperref}
 \usepackage[T1]{fontenc}
+\usepackage{todonotes}
+\newcounter{numerotodo}
+\newcommand{\TODO}[1]{\refstepcounter{numerotodo}\todo[inline]{\thenumerotodo) #1}}
+\usepackage{geometry}
+ \geometry{
+      a4paper,
+       total={170mm,257mm},
+        left=20mm,
+         top=20mm,
+          }
+
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{tcolorbox}
+\tcbuselibrary{listings,skins}
+\lstdefinestyle{mystyle}{
+     basicstyle=\ttfamily\color{white},
+     language=bash,
+     tabsize=1,
+     keywordstyle=\color{blue}\bf,
+     showstringspaces=false,
+     morekeywords={mount, umount, ls, 
+	 		cat, adduser, chown, chgrp, init, fuser}
+ }
+\newtcblisting{mylisting}{
+      enhanced,                             %%% needed for shadow
+      arc=2mm,
+      top=0mm,
+      bottom=0mm,
+      left=0mm,
+      right=0mm,
+      boxrule=0pt,
+      colback=black,
+      %shadow={5mm}{-3mm}{0mm}{fill=black!50!white,opacity=0.5},             %%% here for shadow  and adjust as you like
+      listing only,
+      listing options={style=mystyle},
+      hbox
+}
+
 
 \begin{document}
-Il était une fois dans une lointaine galaxie...
+\begin{center}
+\huge{TP 2 (Bash)}
+\end{center}
+=============================================================
+
+
+\section{Introduction}
+
+Le but de cette séance est de vous familiariser avec l’utilisation de l’interpréteur de commande, ou shell, sous Unix. C’est l’équivalent de "l'invite de commandes MS-DOS" de Windows. Il permet d’entrer des commandes en ligne et d’automatiser certaines tâches grâce à un langage de programmation propre adapté aux manipulations de fichiers et de processus. Sous Unix, le shell offre beaucoup plus de possibilités que sous Windows et son utilisation est plus courante.
+
+Plus d'info : \url{http://fr.wikipedia.org/wiki/Bourne-Again\_shell}
+
+\section{Interpréteur de commandes}
+
+Un interpréteur de commandes est un processus dont le rôle est de fournir une interface textuelle avec le système d'exploitation.
+
+Un interpréteur de commandes exécute en boucle la séquence d'actions suivante :
+\begin{itemize}
+\item affichage de l'invite de commande (prompt) signalant qu'il est en attente d'une nouvelle commande de la part de l'utilisateur; (c'est quand il y a d'affiché sur le terminal : user@pc:repertoire courant\$)
+\item aide à la saisie de la nouvelle commande, en fournissant à l'utilisateur des fonctions d'édition de texte en mode ligne : accès à l'historique des commandes précédentes, copie et remplacement rapides, complétion de noms de fichiers, etc. ;
+\item analyse et vérification syntaxique de la commande tapée par l'utilisateur, et affichage d'un message d'erreur en cas de problème ;
+\item si la commande est conforme, appel au système d'exploitation pour réaliser les opérations demandées : lancement d'un nouveau processus, etc. ;
+\item attente de la fin de la commande en cours.
+\end{itemize}
+
+Depuis les débuts des premiers Unix, de nombreux interpréteurs ont été créés, disposant de fonctionnalités de plus en plus puissantes. Parmi eux, citons : sh, csh, ksh, zsh, bash... Par défaut, vos environnements sont configurés pour utiliser Bash.
+
+
+\section{Configuration}
+
+Bash utilise des fichiers de configuration, qui se trouvent dans votre répertoire utilisateur.
+\begin{itemize} 
+\item .bash\_login : les commandes de ce fichier sont exécutées lorsque vous vous connectez.
+\item .bash\_logout : les commandes de ce fichier sont exécutées lorsque vous vous déconnectez.
+\item .bashrc : on y place les initialisations des sessions interactives (rattachées à un terminal).
+\end{itemize}
+
+L’ensemble de ces fichiers sont exécutés par le shell s’ils se trouvent dans votre répertoire racine. Cela signifie que vous pouvez en modifier le contenu afin de personnaliser votre environnement de travail. Comme toutes les commandes unix, le shell bash dispose d’une documentation en ligne accessible par la commande man.
+
+\section{Edition des Commandes}
+
+Dans une utilisation interactive du shell, c’est-à-dire lorsque le shell interprète ligne à ligne les commandes soumises par l'utilisateur, il est important de pouvoir corriger, si cela est nécessaire, la ligne de commande avant de la soumettre, par des commandes similaires à celles d'un éditeur de texte.
+
+\TODO{Taper une commande sans appuyer entrer, puis testez ces combinaisons de touches :}
+
+\begin{itemize}
+\item Control + a
+\item Control + e
+\item Control + u
+\item Control + k
+\item Control + l
+\end{itemize}
+
+Vous pouvez maintenant supprimer entièrement la commande que vous venez de taper, en au plus deux combinaisons de touches.
+Une autre possibilité de bash, qui concerne encore une fois la construction d'une commande, permet la complétion du mot commencé grâce à la touche TAB.
+
+\TODO{Par exemple commencez à taper cd /home/votre\_nom\_de\_compte mais ne finissez pas votre nom de compte et appuyez sur la touche TAB une fois, voir deux si rien ne se passe.}
+
+Par la suite testez régulièrement la touche TAB, quand vous écrivez de commandes, pour comprendre comment elle marche.
+
+Quelle que soit la position du curseur sur la ligne de commande, la touche Entrée lance l'interprétation de la ligne par le shell.
+
+\section{Variables et Substitution}
+
+Le shell permet de définir des variables pour conserver certaines informations. Quelques variables au nom particulier sont utilisées par le système mais vous pouvez définir vos propres variables.
+
+\TODO{Exécutez la commande "env" pour afficher l'ensemble des variables définies dans l'environnement courant.}
+
+Une variable est définie par la syntaxe NOM=VALEUR (sans espaces !). 
+
+La valeur est considérée comme une chaîne de caractère même s'il s'agit d'une succession de chiffres. La valeur d'une variable est accessible par la syntaxe \$NOM. 
+
+Vous pouvez afficher cette valeur à l'écran en utilisant la commande echo.
+
+\TODO{Définissez une variable de nom UN et de valeur toto. Comparez les commandes :}
+\begin{mylisting}
+echo UN
+echo \$UN
+\end{mylisting}
+
+\TODO{Afficher la valeur de la variable RANDOM.}
+
+En fait, il existe deux types de variables : les variables d'environnement ou variables exportées, et celles qui ne le sont pas. La valeur d'une variable d'environnement est accessible par tous les processus issus du shell dans lequel la variable a été définie. En revanche, la valeur d'une variable non exportée est uniquement accessible dans le shell où elle a été définie.
+
+Les exercices suivants vont mettre en évidence ce comportement. Tout d'abord, notez que pour exporter une variable, il suffit d'exécuter la commande export suivie du nom de la variable à exporter. Par exemple, si vous créez la variable x contenant la valeur toto, x=toto 
+
+vous pouvez l'exporter en écrivant export x. C'est deux opération peuvent être faites en une seule fois en utilisant la syntaxe suivante export x=toto
+\TODO{Définissez une seconde variable de nom DEUX et de même valeur que UN.} 
+\TODO{Exportez la variable DEUX. Affichez les valeurs de UN et DEUX dans le shell courant.}
+\TODO{Vérifiez si la variable UN et/ou la variable DEUX apparaissent avec la commande env.}
+\TODO{Exécutez un nouveau shell en tapant la commande xterm. Affichez la valeur des deux variables. Que remarquez-vous ?}
+
+On peut annuler l'exportation d'une variable à l'aide de la commande
+\begin{mylisting}
+export -n NOM
+\end{mylisting}
+
+\TODO{Annulez l'exportation de la variable DEUX et vérifiez à l'aide de env que la commande à bien fonctionnée.}
+
+\section{Evaluation et Substitution}
+
+Il est important que vous vous familiarisiez avec les divers mécanismes d'évaluation du shell. Le caractère \$ utilisé devant un nom de variable permet de substituer le nom par la valeur de la variable.
+
+Lors de l'évaluation d'une commande, une première opération de substitution a lieu avant l'exécution de la commande substituée.
+Plusieurs caractères permettent de contrôler la substitution :
+\begin{itemize}
+\item les parties d'une commande situées entre apostrophes ('') ne sont pas substituées ;
+\item les parties d'une commande situées entre guillemets ("") sont substituées normalement ;
+\item des crochets ({}) permettent de délimiter un nom de variable ;
+\item des parenthèses (\$()) provoquent l'exécution d'une partie de la commande dans un sous-shell ;
+\item le caractère \ empêche la substitution.
+\end{itemize}
+
+Remarque : On peut saisir sur la même ligne plusieurs commandes en utilisant le point virgule (;). Par exemple, la ligne suivante crée la variable y en lui affectant la valeur toto, puis l'affiche y=toto ; echo \$y
+
+Quelques exemples pour vous aider à comprendre : (Si besoin, taper man pwd pour vous rappeler ce que fait cette commande.)
+
+\begin{itemize}
+\item echo \$HOME   --> /net/cremi/auesnard
+\item echo $\backslash$\$HOME   --> \$HOME
+\item echo '\$HOME'   --> \$HOME
+\item x=pwd ; echo \$x   --> pwd
+\item x=\$(pwd) ; echo \$x   --> /net/cremi/auesnard
+\item x=toto tutu ; echo $\backslash$\$x   --> Erreur, il faut utiliser les "..."
+\item x="toto tutu" ; echo \$x   --> toto tutu
+\end{itemize}
+\TODO{Dans les expressions shell ci-dessus, indiquez le résultat de l'évaluation du shell et le résultat final. Vous chercherez les solutions de ces exercices à la main, et vous vérifierez vos solutions en les tapant dans le shell.}
+\begin{itemize}
+\item x=p ; y=\$xwd ; \$y 
+\item x=p ; \${x}'wd' 
+\item x=p ; "\${x}'wd'" 
+\item x=p ; y=\${x}wd ; \$y 
+\item x=p ; y='\${x}"wd"'; \$y 
+\item x=p ; "\${x}wd"x=p ; y=\$(\${x}wd); echo \$y 
+\end{itemize}
+
+\TODO{Créez une variable salutation dont le contenu est "bonjour nom", où nom représente votre nom d'utilisateur. Les guillemets doivent apparaître quand on fait echo \$salutation.}
+
+\TODO{Certaines variables sont utilisées par le shell. Affichez le contenu des variables HOME et PATH.}
+
+\section{Quelques Commandes du Shell}
+
+Le shell dispose d'un ensemble très complet de commandes pour la manipulation des fichiers et des processus. Certaines commandes sont internes aux shell. Par exemple, les commandes cd, echo et pwd que vous avez utilisées sont des commandes internes. D'autres commandes sont des programmes exécutables accessibles depuis le shell. Nous allons d'abord explorer les principales commandes internes.
+
+\TODO{On peut trouver la liste des commandes internes au shell (ou builtin commands), en tapant info coreutils.}
+
+Pour apprendre à se déplacer dans cette documentation taper H 
+
+une fois que vous y êtes.
+
+\TODO{Que signifie la commande cd - ?}
+\TODO{La commande exit permet de quitter le shell. Essayez.}
+\TODO{La commande printf peut remplacer echo. Quelles différences trouvez-vous entre entre les deux commandes ?}
+\TODO{Utilisez la commande read pour affecter une valeur saisie au clavier à une variable x.}
+\TODO{Testez la commande history. Rappelez une commande quelconque de l'historique. La commande !numéro relance la commande de numéro donné dans l'historique.}
+\TODO{La commande !! permet de relancer la commande précédente.}
+
+En tapant quelle commande peut-on lancer l'avant dernière commande.
+
+\TODO{La commande "unset" permet de supprimer une variable.}
+
+Testez là en créant et en supprimant des variables.
+
+\TODO{Faites unset sur la variable PATH de votre environnement. Essayez maintenant de lancer la commande ls. Que remarquez-vous ? Lancez maintenant /bin/ls. }
+
+Pour que les commandes marchent à nouveau quittez et relancez un nouveau terminal.
+
+\TODO{Cherchez sur internet à quoi sert la variable PATH pour comprendre ce qu'il vient de se passer.}
+\TODO{Utilisez la commande which. Testez avec les paramètres ls et cd. S'il n'y a pas de réponse, c'est qu'il s'agit d'une commande interne.}
+
+\section{Alias}
+
+Il est possible de définir des alias sous Unix permettant de personnaliser vos appels de commandes les plus utilisées. Les commandes à utiliser ici sont alias et unalias.
+
+Par exemple si vous faites la commande ll, normalement vous avez une erreur. Maintenant, tapez alias ll='ls -l'
+
+Tapez de nouveau ll.
+
+En utilisant les commandes alias et unalias, répondez aux questions suivantes :
+\TODO{Affichez la liste des alias définis dans le shell courant.}
+\TODO{Testez la commande date. Puis, définissez un alias date sur la commande ls et exécutez la commande date.}
+\TODO{La commande date originale n'est plus disponible. Trouvez un moyen de l'appeler.}
+\TODO{Détruisez cet alias.}
+
+\section{Commandes Externes Classiques}
+
+Les commandes externes sont des programmes exécutables qui peuvent être disponibles ou pas suivant l'installation du système que vous
+utilisez. Certains programmes sont néanmoins tellement utilisés qu'ils sont devenus indissociables du système. Les programmes ls, cp et mv
+sont des exemples de commandes externes classiques. Nous allons découvrir d'autres commandes très pratiques.
+\TODO{ Testez les commandes suivantes : date, whoami, who, w, id, hostname, uname -a, df, uptime, free. A quoi servent-elles ?} 
+\TODO{ Les commandes cat, more, less, tail, head sont utilisées pour visualiser le contenu d'un fichier texte. Essayez ces commandes avec pour paramètre /proc/cpuinfo et /proc/meminfo. Quel infos contiennent ces fichiers ?  (on pourra utiliser q pour quitter more et less.)}
+
+\TODO{ Etudiez les options de ces commandes. Affichez les cinq premières lignes et les cinq dernières lignes de \textasciitilde/.bashrc.}
+\TODO{ La commande "expr" permet d'interpréter les variables comme des valeurs numériques et de réaliser des calculs simples.}
+
+Par exemple, testez
+\begin{mylisting}
+i=99 ; j=$(expr $i + 1) ; echo "i=$i j=$j"
+\end{mylisting}
+
+Il est également possible de réaliser des tests logiques entre la valeur de deux variables. Utilisez expr pour déterminer si i < j.
+\TODO{La commande grep permet d'isoler une ligne contenant une expression particulière. Essayez la commande :}
+\begin{mylisting}
+grep "udp" /etc/services
+\end{mylisting}
+
+\TODO{Créez le fichier suivant avec la commande cat (cf. TP1).}
+\begin{itemize}
+\item d
+\item b
+\item a
+\item c
+\item b
+\item d
+\end{itemize}
+
+Testez la commande sort.
+Créer un fichier adapté puis testez la commande uniq.
+\TODO{La commande "find" permet de rechercher un fichier à partir d'un point de l'arborescence.}
+
+ Ainsi :
+\begin{mylisting}
+find \$HOME -name "*.txt"
+\end{mylisting}
+
+permet de retrouver tous les fichier nommés "*.txt" à partir du répertoire \$HOME et dans ses sous-répertoires.
+
+\TODO{Ecrivez une commande pour déterminer l'emplacement des fichiers débutants par le préfixe "tty" dans le dossier /dev.}
+
+\section{Archivage}
+
+Les utilitaires tar et gzip sont très utilisés pour archiver et comprimer des fichiers. 
+
+Ainsi, la commande :
+\begin{mylisting}
+tar cvf \textasciitilde/tmp.tar /tmp
+\end{mylisting}
+
+permet de réunir tous les fichiers et les sous-répertoires contenus dans /tmp dans le fichier \textasciitilde/tmp.tar.
+
+Ce fichier peut alors être comprimé pour un envoi d'email : 
+\begin{mylisting}
+gzip \textasciitilde/tmp.tar
+\end{mylisting}
+
+On obtient alors le fichier comprimé \textasciitilde/tmp.tar.gz qui remplace le fichier original.
+
+Inversement, la commande : 
+\begin{mylisting}
+gunzip \textasciitilde/tmp.tar.gz
+\end{mylisting}
+
+permet de décomprésser le fichier et la commande :
+\begin{mylisting}
+tar xvf \textasciitilde/tmp.tar
+\end{mylisting}
+développe le contenu de l'archive.
+
+L'option z de la commande tar permet de (dé)compresser tout en (dé)archivant.
+\begin{mylisting}
+tar cvzf \textasciitilde/tmp.tar.gz /tmp
+tar xvzf \textasciitilde/tmp.tar.gz
+\end{mylisting}
+
+\TODO{Créez un répertoire archive dans lequel vous copierez (\textasciitilde/.bashrc, /etc/passwd, /etc/bash*, ...). Archivez puis désarchivez votre répertoire.}
+
+
+\section*{A propos du TP}
+Imad Eddine BOUSBAA (ibousbaa@usthb.dz), année 2018;
+
+Les sources de ce TP sont sur le dépot :
+
+  \begin{center}\url{github.com/bimade/tpBash}\end{center}
+
+  ce TP \emph{est} sous licence
+  \href{http://creativecommons.org/licenses/by-nc-sa/4.0/}
+  {Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) }
+Ce document provient presque entièrement d'un document fait par Patxi Laborde Zubieta (patxi.laborde-zubieta@labri.fr)
+
 \end{document}
