@@ -1,0 +1,390 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[french]{babel}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage[T1]{fontenc}
+\usepackage{todonotes}
+\newcounter{numerotodo}
+\newcommand{\TODO}[1]{\refstepcounter{numerotodo}\todo[inline]{\thenumerotodo) #1}}
+\usepackage{geometry}
+ \geometry{
+      a4paper,
+       total={170mm,257mm},
+        left=20mm,
+         top=20mm,
+          }
+
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{tcolorbox}
+\tcbuselibrary{listings,skins}
+\lstdefinestyle{mystyle}{
+     basicstyle=\ttfamily\color{white},
+     language=bash,
+     tabsize=1,
+     keywordstyle=\color{blue}\bf,
+     showstringspaces=false,
+     morekeywords={mount, umount, ls, 
+	 		cat, adduser, chown, chgrp, init, fuser}
+ }
+\newtcblisting{mylisting}{
+      enhanced,                             %%% needed for shadow
+      arc=2mm,
+      top=0mm,
+      bottom=0mm,
+      left=0mm,
+      right=0mm,
+      boxrule=0pt,
+      colback=black,
+      %shadow={5mm}{-3mm}{0mm}{fill=black!50!white,opacity=0.5},             %%% here for shadow  and adjust as you like
+      listing only,
+      listing options={style=mystyle},
+      hbox
+}
+
+
+\begin{document}
+\begin{center}
+\huge{TP 4 (Scripts)}
+\end{center}
+=============================================================
+
+Lorsqu’un traitement nécessite l’exécution de plusieurs commandes, il est préférable de les sauvegarder dans un fichier plutôt que de les retaper au clavier chaque fois que le traitement doit être lancé. Ce type de fichier est appelé fichier de commandes ou fichier shell ou
+encore script shell.
+
+\section{Premier Script}
+
+
+A l’aide d’un éditeur de texte, créez un fichier "premier.sh" contenant les lignes suivantes :
+\begin{mylisting}
+#!/bin/bash
+# premier script shell
+echo -n "La date du jour est: " date
+\end{mylisting}
+
+La notation \#! en première ligne d'un fichier interprété précise au shell courant quel interpréteur doit être utilisé pour exécuter le script shell (dans cet exemple, il s’agit de /bin/bash). Chaque ligne représente une commande à exécuter, sauf les lignes précédées par \# qui sont des commentaires. On aurait également pu écrire
+\begin{mylisting}
+  #!/bin/bash
+  # premier script shell
+  echo -n "La date du jour est: "; date    
+\end{mylisting}
+
+Pour lancer l’exécution d’un script shell, on peut utiliser la commande : bash nom\_script.
+Par exemple :
+\begin{mylisting}
+  bash premier.sh  
+\end{mylisting}
+
+
+Mais il est plus simple de lancer l’exécution d’un script shell en
+tapant directement son nom, comme on le ferait pour une commande
+Unix. 
+
+Pour ce faire, il suffit de donner les droits en exécution au fichier script à l'aide de la commande chmod. Pour lancer le script il suffit d'entrer le chemin relatif ou le chemin absolu de ce fichier.
+
+Par exemple si je suis dans le même dossier que premier.sh, il suffit d'écrire :
+\begin{mylisting}
+  ./premier.sh  
+\end{mylisting}
+
+ou alors, en utilisant le chemin : /home/<utilistaeur>/.../premier.sh
+
+où " <utilisateur/..." est à remplacer par le chemin complet.
+
+Remarque : Il ne faut pas oublier de préciser ./ avant le nom de la commande, car le plus souvent le répertoire courant (.) ne se trouve pas dans le PATH.
+
+\TODO{Lancez votre éditeur de texte préféré. Ecrivez le script premier.sh et testez-le.}
+\TODO{Créez un script information.sh qui marche pour n'importe quel autre utilisateur, qui dans un premier temps affiche :}
+
+\begin{mylisting}
+Mon nom d'utilisateur est "nom_utilisateur".
+Le nom de l'ordinateur sur lequel je suis est [nom_ordinateur].
+Le chemin de mon repertoire utilisateur est $(chemin_repertoire_utilisateur).
+Le chemin du dossier dans lequel je suis est <chemin_dossier_courant>.
+\end{mylisting}
+
+\section{Arguments du Script}
+
+Voici un exemple de script shell : mycopy.sh <src> <dst> qui manipule deux arguments.
+\begin{mylisting}
+#!/bin/bash
+echo "Nom du programme : $0"
+echo "Nb d'arguments : $#"
+echo "Source : $1"
+echo "Destination : $2"
+echo "Tous les arguments : $*"
+cp $1 $2
+\end{mylisting}
+
+\TODO{Ecrivez le script mycopy.sh et testez-le.}
+
+Dans cette exemple on peut voir que les variables 1 et 2 permettent de récupérer
+ce qui a été donné en argument à mycopy.sh.
+\TODO{Ecrivez un script operation.sh qui prend deux entiers en entrée, qui vous donne la somme de ces deux entiers, le produit de ces deux entiers.}
+
+Attention, il y a des caractères spéciaux qu'il faut penser à despécialier. ./operation.sh 4 13 devrait afficher: 
+\begin{mylisting}
+4 + 13 = 17
+4 x 13 = 52
+\end{mylisting}
+
+
+\section{Boucle}
+
+Voici un petit exemple de boucle for que vous pouvez utilisez dans vos scripts :
+\begin{mylisting}
+for a in toto tata titi
+do
+# corps de boucle
+echo $a
+done
+\end{mylisting}
+
+La variable d'itération \$a prend tour à tour les valeurs de la liste "toto tata titi". Cette bouche est donc équivalente à la séquence suivante :
+\begin{mylisting}
+a=toto ; echo $a
+a=tata ; echo $a
+a=titi ; echo $a
+\end{mylisting}
+
+Dont le résultat est :
+\begin{mylisting}
+toto
+tata
+titi
+\end{mylisting}
+Exemple : on peut de manière plus utile utiliser une boucle for sur tous les fichiers d'un répertoire, par exemple /tmp. 
+\begin{mylisting}
+for file in $(ls /tmp)
+do
+echo $file
+done
+\end{mylisting}
+
+\TODO{ Créez un script save.sh qui prend en entrée un dossier <src>, qui crée un dossier save dans <src> et qui copie tous les fichiers de <src> dans le dossier save, en ajoutant .save à leur nom.
+Dans le cas où vous testez plusieurs fois votre script, n'oubliez pas de supprimer le dossier save que vous venez de créer.}
+
+\TODO{Testez la commande seq 10. Ecrire un script boucle.sh qui prend un argument entier <N> et affiche la séquence suivante }
+\begin{mylisting}
+hello
+hello
+hello
+...
+hello
+world 1
+world 2
+world 3
+world N
+\end{mylisting}
+\TODO{Créez un script table.sh permettant d'afficher des tables de multiplication. Par exemple, table.sh 5 10 aura pour résultatl'affichage :}
+\begin{mylisting}
+0 x 5 = 0
+1 x 5 = 5
+2 x 5 = 10
+...
+10 x 5 = 50
+\end{mylisting}
+
+\TODO{Ecrivez le script facto.sh qui prend en argument un entier <N> et affiche le factoriel de cet entier, c'est-à-dire le résultat du calcul 1*2*3*...*N.}
+
+Par exemple ./facto.sh 5 affichera
+\begin{mylisting}
+5! = 120
+\end{mylisting}
+
+\section{Structure Conditionnelle}
+
+L'instruction if permet d'effectuer une ou plusieurs inscrutions si une condition est réalisée.
+\begin{mylisting}
+if condition
+then
+instruction(s) si condition vraie
+fi
+\end{mylisting}
+
+L'instruction if peut aussi inclure une instruction else permettant d'exécuter des instructions dans le cas où la condition n'est pas réalisée.
+\begin{mylisting}
+if condition
+then
+# instruction(s) si condition vraie
+else
+# instruction(s) sinon
+fi
+\end{mylisting}
+On peut aussi enchaîner plusieurs test de conditions de la façon suivante :
+\begin{mylisting}
+if condition1
+then
+# instruction(s) si condition1 vraie
+elif condition2
+then
+# instruction(s) si condition2 vraie
+elif condition3
+...
+else
+# instruction(s) sinon
+fi
+\end{mylisting}
+
+\section{Les Tests}
+
+Pour écrire un condition, on utilise la syntaxe suivante : "[ tests ]" ou encore "test tests". Attention à ne pas oublier l'espace après le premier crochet, et avant le dernier !
+
+Voici une liste des tests possibles sur les fichiers et/ou répertoires :
+\begin{itemize}
+\item "-e fichier" : vrai si le fichier/répertoire existe.
+\item "-r fichier" : vrai si le fichier/répertoire est accessible en lecture.
+\item "-w fichier" : vrai si le fichier/répertoire est accessible en écriture.
+\item "-x fichier" : vrai si le fichier est exécutable ou si le
+\end{itemize}
+
+répertoire est accessible.
+\begin{itemize}
+\item "-d nom" : vrai si nom représente un répertoire.
+\item "-f nom" : vrai si nom représente un fichier.
+\end{itemize}
+Voici les tests pour les entiers :
+\begin{itemize}
+  \item "entier1 -eq entier2" : vrai si entier1 est égal à entier2.-
+  \item "entier1 -ge entier2" : vrai si entier1 est supérieur ou égal à entier2.
+  \item "entier1 -gt entier2" : vrai si entier1 est strictement supérieur à entier2.
+  \item "entier1 -le entier2" : vrai si entier1 est inférieur ou égal à entier2.
+  \item "entier1 -lt entier2" : vrai si entier1 est strictement inférieur à entier2.
+  \item "entier1 -ne entier2" : vrai si entier1 est différent de entier2.  
+\end{itemize}
+
+Voici les tests sur les chaines de caractères, qui doivent être entourées par des guillemets.
+\begin{itemize}
+  \item "-n "chaîne"" : vrai si la chaîne n'est pas vide.
+  \item "-z "chaîne"" : vrai si la chaîne est vide.
+  \item ""chaine1" = "chaine2"" : vrai si les deux chaînes sont identiques.
+  \item ""chaine1" != "chaine2"" : vrai si les deux chaînes sont différentes.    
+\end{itemize}
+
+Il est également possible de combiner des tests avec les opérateurs \&\& et ||. L'opérateur ! sert à inverser la condition. On peut regrouper des tests avec les \{ \}.
+\begin{itemize}
+\item "test1 \&\& test2" : vrai si test1 ET test2 sont vrais.
+\item "test1 || test2" : vrai si test OU test2 sont vrais.
+\item "! test" : vrai si test est faux.
+\item !\{ test1 \&\& test2\} : faux si (test1 ET test2) sont vrais, vrai sinon.
+\end{itemize}
+Attention à respecter les espaces !!!!
+
+
+Exemple 
+\begin{mylisting}
+#!/bin/bash
+echo -n "Entrez un nombre entier : " ; read nombre
+if [ $nombre -lt 0 ]; then
+echo "$nombre est negatif";
+elif [ $nombre -gt 0 ]; then
+echo "$nombre est positif";
+else
+echo "$nombre est egal a zero";
+fi
+\end{mylisting}
+
+Exemple
+\begin{mylisting}
+#!/bin/bash
+if [ -f $1 ]
+then
+echo $1 : fichier ordinaire
+cat $1
+elif [ -d $1 ]
+then
+echo $1 : repertoire
+ls $1
+else
+echo $1 : type non traite
+fi
+\end{mylisting}
+
+\TODO{Écrire un script qui vous dit: \\
+Good Morning\\
+Good Afternoon\\
+Good Evening\\
+selon l'heure qu'il est.\\ }
+
+\section{Boucle While}
+
+Voici un autre type de boucle, la boucle while (tant que), qui répète les instructions du corps de boucle tant que la condition est vraie.
+
+\begin{mylisting}
+  while condition
+  do
+  instruction(s)
+  done  
+\end{mylisting}
+
+Exemple
+i=1
+\begin{mylisting}
+  while [ $i -le 10 ] # test si $i est <= 10
+  do
+  echo $i
+  i=$(expr $i + 1) # incremente i de 1 a chaque iteration
+  done  
+\end{mylisting}
+
+\section{Exercices}
+\TODO{Familiarisez-vous avec la commande cut. Pour cela, utiliser le manuel et internet.}
+\TODO{Ecrivez un script spoil.sh qui prend en entrée un fichier <src> (assez long), qui crée un fichier contenant les 15 premières lignes de <src>, une ligne vide, les 15 lignes du milieu, une ligne vide et les 15 lignes de la fin.}
+
+Pour le tester, créez d'abord un fichier contenant
+
+1\\
+2\\
+3\\
+...\\
+150\\
+
+\TODO{Créez un fichier colors.txt contenant le nom de toutes les couleurs standards (un nom par ligne)issues du fichier /usr/share/X11/rgb.txt.}
+
+On peut lancer un émulateur de terminal coloré avec la commande : 
+gnome-terminal -bg nom\_de\_couleur
+
+\TODO{Ecrire un script xtercolor.sh qui ouvre une fenêtre terminal avecun couleur de fond aléatoire, choisie dans la liste colors.txt.}
+
+\TODO{Écrire un script losange.sh qui réalise le dessin suivant dans le terminal.}
+Enter Number between (5 to 9) : 9\\ 
+\begin{center}
+         .\\
+        . .\\
+       . . .\\
+      . . . .\\
+     . . . . .\\
+    . . . . . .\\
+   . . . . . . .\\
+  . . . . . . . .\\
+ . . . . . . . . .\\
+ . . . . . . . . .\\
+  . . . . . . . .\\
+   . . . . . . .\\
+    . . . . . .\\
+     . . . . .\\
+      . . . .\\
+       . . .\\
+        . .\\
+         .\\
+\end{center}
+
+La variable spéciale de bash \$RANDOM permet de générer un nombre entier aléatoire entre 0 et 32767 (voir man bash).
+
+\TODO{Il s'agit d'écrire un petit jeux à l'aide d'un script shell devinette.sh qui cherche à faire deviner un entier tiré au sort (ultiser \$RANDOM) en indiquant à chaque fois au joueur si l'entier
+qu'il a saisi per est trop petit ou trop grand. Le jeu s'arrête quand le joueur a découvert l'entier}
+
+\section*{A propos du TP}
+Imad Eddine BOUSBAA (ibousbaa@usthb.dz), année 2018;
+
+Les sources de ce TP sont sur le dépot :
+
+  \begin{center}\url{github.com/bimade/tpBash}\end{center}
+
+  ce TP \emph{est} sous licence
+  \href{http://creativecommons.org/licenses/by-nc-sa/4.0/}
+  {Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) }
+Ce document provient presque entièrement d'un document fait par Patxi Laborde Zubieta (patxi.laborde-zubieta@labri.fr)
+
+\end{document}
