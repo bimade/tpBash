@@ -267,8 +267,8 @@ Créer un fichier adapté puis testez la commande uniq.
 
  Ainsi :
 \begin{mylisting}
-find \$HOME -name "*.txt"
-\end{mylisting}
+find $HOME -name "*.txt"
+\end{mylisting}$
 
 permet de retrouver tous les fichier nommés "*.txt" à partir du répertoire \$HOME et dans ses sous-répertoires.
 
@@ -283,33 +283,33 @@ Ainsi, la commande :
 tar cvf \textasciitilde/tmp.tar /tmp
 \end{mylisting}
 
-permet de réunir tous les fichiers et les sous-répertoires contenus dans /tmp dans le fichier \textasciitilde/tmp.tar.
+permet de réunir tous les fichiers et les sous-répertoires contenus dans /tmp dans le fichier \textasciitilde /tmp.tar.
 
 Ce fichier peut alors être comprimé pour un envoi d'email : 
 \begin{mylisting}
-gzip \textasciitilde/tmp.tar
+gzip \textasciitilde /tmp.tar
 \end{mylisting}
 
 On obtient alors le fichier comprimé \textasciitilde/tmp.tar.gz qui remplace le fichier original.
 
 Inversement, la commande : 
 \begin{mylisting}
-gunzip \textasciitilde/tmp.tar.gz
+gunzip ~/tmp.tar.gz
 \end{mylisting}
 
 permet de décomprésser le fichier et la commande :
 \begin{mylisting}
-tar xvf \textasciitilde/tmp.tar
+tar xvf ~/tmp.tar
 \end{mylisting}
 développe le contenu de l'archive.
 
 L'option z de la commande tar permet de (dé)compresser tout en (dé)archivant.
 \begin{mylisting}
-tar cvzf \textasciitilde/tmp.tar.gz /tmp
-tar xvzf \textasciitilde/tmp.tar.gz
+tar cvzf ~/tmp.tar.gz /tmp
+tar xvzf ~/tmp.tar.gz
 \end{mylisting}
 
-\TODO{Créez un répertoire archive dans lequel vous copierez (\textasciitilde/.bashrc, /etc/passwd, /etc/bash*, ...). Archivez puis désarchivez votre répertoire.}
+\TODO{Créez un répertoire archive dans lequel vous copierez (~/.bashrc, /etc/passwd, /etc/bash*, ...). Archivez puis désarchivez votre répertoire.}
 
 
 \section*{A propos du TP}
