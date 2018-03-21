@@ -280,14 +280,14 @@ Les utilitaires tar et gzip sont très utilisés pour archiver et comprimer des 
 
 Ainsi, la commande :
 \begin{mylisting}
-tar cvf \textasciitilde/tmp.tar /tmp
+tar cvf ~/tmp.tar /tmp
 \end{mylisting}
 
-permet de réunir tous les fichiers et les sous-répertoires contenus dans /tmp dans le fichier \textasciitilde /tmp.tar.
+permet de réunir tous les fichiers et les sous-répertoires contenus dans /tmp dans le fichier ~/tmp.tar.
 
 Ce fichier peut alors être comprimé pour un envoi d'email : 
 \begin{mylisting}
-gzip \textasciitilde /tmp.tar
+gzip ~/tmp.tar
 \end{mylisting}
 
 On obtient alors le fichier comprimé \textasciitilde/tmp.tar.gz qui remplace le fichier original.
@@ -309,7 +309,7 @@ tar cvzf ~/tmp.tar.gz /tmp
 tar xvzf ~/tmp.tar.gz
 \end{mylisting}
 
-\TODO{Créez un répertoire archive dans lequel vous copierez (~/.bashrc, /etc/passwd, /etc/bash*, ...). Archivez puis désarchivez votre répertoire.}
+\TODO{Créez un répertoire archive dans lequel vous copierez (\textasciitilde /.bashrc, /etc/passwd, /etc/bash*, \dots). Archivez puis désarchivez votre répertoire.}
 
 
 \section*{A propos du TP}
