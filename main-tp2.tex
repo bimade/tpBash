@@ -123,7 +123,7 @@ Vous pouvez afficher cette valeur à l'écran en utilisant la commande echo.
 \begin{mylisting}
 echo UN
 echo $UN
-\end{mylisting}
+\end{mylisting}$
 
 \TODO{Afficher la valeur de la variable RANDOM.}
 
@@ -153,9 +153,9 @@ Plusieurs caractères permettent de contrôler la substitution :
 \begin{itemize}
 \item les parties d'une commande situées entre apostrophes ('') ne sont pas substituées ;
 \item les parties d'une commande situées entre guillemets ("") sont substituées normalement ;
-\item des crochets ({}) permettent de délimiter un nom de variable ;
+\item des crochets (\{\}) permettent de délimiter un nom de variable ;
 \item des parenthèses (\$()) provoquent l'exécution d'une partie de la commande dans un sous-shell ;
-\item le caractère \ empêche la substitution.
+\item le caractère $\backslash$ empêche la substitution.
 \end{itemize}
 
 Remarque : On peut saisir sur la même ligne plusieurs commandes en utilisant le point virgule (;). Par exemple, la ligne suivante crée la variable y en lui affectant la valeur toto, puis l'affiche y=toto ; echo \$y
@@ -174,11 +174,11 @@ Quelques exemples pour vous aider à comprendre : (Si besoin, taper man pwd pour
 \TODO{Dans les expressions shell ci-dessous, indiquez le résultat de l'évaluation du shell et le résultat final. Vous chercherez les solutions de ces exercices à la main, et vous vérifierez vos solutions en les tapant dans le shell.}
 \begin{itemize}
 \item x=p ; y=\$xwd ; \$y 
-\item x=p ; \${x}'wd' 
-\item x=p ; "\${x}'wd'" 
-\item x=p ; y=\${x}wd ; \$y 
-\item x=p ; y='\${x}"wd"'; \$y 
-\item x=p ; "\${x}wd"x=p ; y=\$(\${x}wd); echo \$y 
+\item x=p ; \$\{x\}'wd' 
+\item x=p ; "\$\{x\}'wd'" 
+\item x=p ; y=\$\{x\}wd ; \$y 
+\item x=p ; y='\$\{x\}"wd"'; \$y 
+\item x=p ; "\$\{x\}wd"x=p ; y=\$(\$\{x\}wd); echo \$y 
 \end{itemize}
 
 \TODO{Créez une variable salutation dont le contenu est "bonjour nom", où nom représente votre nom d'utilisateur. Les guillemets doivent apparaître quand on fait echo \$salutation.}
@@ -219,7 +219,7 @@ Pour que les commandes marchent à nouveau quittez et relancez un nouveau termin
 
 Il est possible de définir des alias sous Unix permettant de personnaliser vos appels de commandes les plus utilisées. Les commandes à utiliser ici sont alias et unalias.
 
-Par exemple si vous faites la commande ll, normalement vous avez une erreur. Maintenant, tapez alias ll='ls -l'
+Par exemple si vous faites la commande ll, normalement vous avez une erreur. Maintenant, tapez alias ll='ls~-l'
 
 Tapez de nouveau ll.
 
@@ -267,8 +267,8 @@ Créer un fichier adapté puis testez la commande uniq.
 
  Ainsi :
 \begin{mylisting}
-find \$HOME -name "*.txt"
-\end{mylisting}
+find $HOME -name "*.txt"
+\end{mylisting}$
 
 permet de retrouver tous les fichier nommés "*.txt" à partir du répertoire \$HOME et dans ses sous-répertoires.
 
@@ -280,36 +280,36 @@ Les utilitaires tar et gzip sont très utilisés pour archiver et comprimer des 
 
 Ainsi, la commande :
 \begin{mylisting}
-tar cvf \textasciitilde/tmp.tar /tmp
+tar cvf ~/tmp.tar /tmp
 \end{mylisting}
 
-permet de réunir tous les fichiers et les sous-répertoires contenus dans /tmp dans le fichier \textasciitilde/tmp.tar.
+permet de réunir tous les fichiers et les sous-répertoires contenus dans /tmp dans le fichier ~/tmp.tar.
 
 Ce fichier peut alors être comprimé pour un envoi d'email : 
 \begin{mylisting}
-gzip \textasciitilde/tmp.tar
+gzip ~/tmp.tar
 \end{mylisting}
 
 On obtient alors le fichier comprimé \textasciitilde/tmp.tar.gz qui remplace le fichier original.
 
 Inversement, la commande : 
 \begin{mylisting}
-gunzip \textasciitilde/tmp.tar.gz
+gunzip ~/tmp.tar.gz
 \end{mylisting}
 
 permet de décomprésser le fichier et la commande :
 \begin{mylisting}
-tar xvf \textasciitilde/tmp.tar
+tar xvf ~/tmp.tar
 \end{mylisting}
 développe le contenu de l'archive.
 
 L'option z de la commande tar permet de (dé)compresser tout en (dé)archivant.
 \begin{mylisting}
-tar cvzf \textasciitilde/tmp.tar.gz /tmp
-tar xvzf \textasciitilde/tmp.tar.gz
+tar cvzf ~/tmp.tar.gz /tmp
+tar xvzf ~/tmp.tar.gz
 \end{mylisting}
 
-\TODO{Créez un répertoire archive dans lequel vous copierez (\textasciitilde/.bashrc, /etc/passwd, /etc/bash*, ...). Archivez puis désarchivez votre répertoire.}
+\TODO{Créez un répertoire archive dans lequel vous copierez (\textasciitilde /.bashrc, /etc/passwd, /etc/bash*, \dots). Archivez puis désarchivez votre répertoire.}
 
 
 \section*{A propos du TP}
